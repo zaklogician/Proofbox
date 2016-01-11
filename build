@@ -29,14 +29,12 @@ then
   rm -r $B_DEST/*
 fi
 
-# check for destination directory
-
 # check for macro paradise library
 echo "Checking for Macro Paradise plugin..."
 if [ ! -f "$B_PARADISE" ]
 then
   echo "ERROR: Macro Paradise plugin not found."
-  echo "       Macro Paradise can be obtained from Github or from Maven Central."
+  echo "HINT:  Obtain source from Github or binary from Maven Central."
   exit 1
 fi
 
