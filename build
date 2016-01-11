@@ -1,25 +1,44 @@
 #!/bin/sh
 
-# source and plugin paths
+# destination directory
+B_DEST=bin
+
+# set path to Macro Paradise here
 B_PARADISE=plugins/paradise_2.11.7-2.1.0.jar
 
 # compiler flags
 B_FLAGS="\
--d bin                         \
--classpath bin                 \
+-d $B_DEST                     \
+-classpath $B_DEST             \
 -Xplugin:$B_PARADISE           \
 -Xplugin-require:macroparadise \
 -encoding UTF-8                \
 -feature -deprecation          "
 
+# make sure destination directory exists
+if [ ! -d "$B_DEST" ]
+then
+  echo "Creating destination directory..."
+  mkdir $B_DEST
+fi
 
 # optionally clean project
 if [[ "$1" = "clean" ]]
 then
-        echo "Cleaning project..."
-        rm -r bin/*
+  echo "Cleaning destination directory..."
+  rm -r $B_DEST/*
 fi
 
+# check for destination directory
+
+# check for macro paradise library
+echo "Checking for Macro Paradise plugin..."
+if [ ! -f "$B_PARADISE" ]
+then
+  echo "ERROR: Macro Paradise plugin not found."
+  echo "       Macro Paradise can be obtained from Github or from Maven Central."
+  exit 1
+fi
 
 # perform builds
 fsc -reset 2>/dev/null
