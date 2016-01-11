@@ -19,10 +19,13 @@ case class Failure[A]() extends Backtrack[A] {
 }
 
 case class Success[A]( head: A, more: () => Backtrack[A] ) extends Backtrack[A] {
-  override def interleave( ys: => Backtrack[A] ): Backtrack[A] = Success( head, () => ys interleave more() )
-  override def flatMap[B]( f: A => Backtrack[B] ): Backtrack[B] = f(head) interleave ( (more()) flatMap f )
+  override def interleave( ys: => Backtrack[A] ): Backtrack[A] = 
+    Success( head, () => ys interleave more() )
+  override def flatMap[B]( f: A => Backtrack[B] ): Backtrack[B] = 
+    f(head) interleave ( (more()) flatMap f )
   override def orElse( attempt: => Backtrack[A] ): Backtrack[A] = this
-  override def andThen( attempt: => Backtrack[A] ): Backtrack[A] = Success( head, () => more() andThen attempt )
+  override def andThen( attempt: => Backtrack[A] ): Backtrack[A] = 
+    Success( head, () => more() andThen attempt )
   override val isEmpty: Boolean = false
 }
 
@@ -30,7 +33,7 @@ object Backtrack {
   def unit[A]( a: A ): Backtrack[A] = Success( a, () => Failure() )
   def fromList[A]( xs: List[A] ): Backtrack[A] = xs match {
     case Nil => Failure()
-    case (x:: xs) => Success( x, () => fromList(xs) )
+    case (x :: xs) => Success( x, () => fromList(xs) )
   }
   def oneOf[A](xs: A*): Backtrack[A] = fromList(xs.toList)
 }
