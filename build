@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# source and plugin paths
+B_PARADISE=plugins/paradise_2.11.7-2.1.0.jar
+
+# compiler flags
+B_FLAGS="\
+-d bin                         \
+-classpath bin                 \
+-Xplugin:$B_PARADISE           \
+-Xplugin-require:macroparadise \
+-encoding UTF-8                \
+-feature -deprecation          "
+
+
+# optionally clean project
+if [[ "$1" = "clean" ]]
+then
+        echo "Cleaning project..."
+        rm -r bin/*
+fi
+
+
+# perform builds
+fsc -reset 2>/dev/null
+
+echo "Building Proofbox macros..."
+fsc $B_FLAGS src/proofbox/Backtrack.scala src/proofbox/Proofbox.scala
+
+echo "Building example..."
+fsc $B_FLAGS src/example/Main.scala
+
+echo "Finished build"
